@@ -1,4 +1,7 @@
 import requests
+import os
+
+from dotenv import load_dotenv
 
 
 def fetch_coordinates(apikey, address):
@@ -17,3 +20,14 @@ def fetch_coordinates(apikey, address):
     most_relevant = found_places[0]
     lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
     return lon, lat
+
+
+def main():
+    load_dotenv()
+    apikey = os.getenv("KEY_YANDEX")
+    address = input("Где вы находитесь ? ")
+    print("Ваши координаты: ", fetch_coordinates(apikey, address))
+
+
+if __name__ == '__main__':
+    main()
