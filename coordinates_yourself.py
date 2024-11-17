@@ -1,3 +1,4 @@
+import folium
 import requests
 import os
 import json
@@ -16,6 +17,13 @@ def coffee_all(coord_point_1):
         coffee_json = my_file.read()
     all_coffees = json.loads(coffee_json)
     list_coffees = []
+    map = folium.Map(coord_point_1[::-1])
+    folium.Marker(
+        location=coord_point_1[::-1],
+        tooltip="Click me!",
+        popup="Timberline Lodge",
+        icon=folium.Icon(color="red"),
+    ).add_to(map)
     for coffee in all_coffees:
         name = coffee['Name']
         lon = coffee['geoData']['coordinates'][0]
@@ -27,7 +35,20 @@ def coffee_all(coord_point_1):
         dict_coffees['longitude'] = lon
         dict_coffees['latitude'] = lat
         list_coffees.append(dict_coffees)
-    return list_coffees
+    sorted_coffees_distanse = sorted(list_coffees, key=get_nearest_coffee)
+    five_coffees = sorted_coffees_distanse[:5]
+    pprint(five_coffees)
+    for five_coffee in five_coffees:
+        long = five_coffee['longitude']
+        lati = five_coffee['latitude']
+        coord_point_3 = long, lati
+        folium.Marker(
+            location=coord_point_3[::-1],
+            tooltip="Click me!",
+            popup="Timberline Lodge",
+            icon=folium.Icon(color="green"),
+        ).add_to(map)
+    map.save("index.html")
 
 
 def fetch_coordinates(apikey, address):
@@ -54,10 +75,8 @@ def main():
     address = input("Где вы находитесь ? ")
     point_1 = address
     coord_point_1 = fetch_coordinates(apikey, point_1)
-    distanse_to_coffees = coffee_all(coord_point_1)
     print("Ваши координаты: ", coord_point_1)
-    m = sorted(distanse_to_coffees, key=get_nearest_coffee)
-    pprint(m)
+    coffee_all(coord_point_1)
 
 
 if __name__ == '__main__':
