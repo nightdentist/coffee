@@ -3,9 +3,15 @@ import requests
 import os
 import json
 
-from pprint import pprint
+
 from geopy import distance
 from dotenv import load_dotenv
+from flask import Flask
+
+
+def hello_world():
+    with open('index.html') as file:
+        return file.read()
 
 
 def get_nearest_coffee(distance_coffees):
@@ -37,7 +43,6 @@ def coffee_all(coord_point_1):
         list_coffees.append(dict_coffees)
     sorted_coffees_distanse = sorted(list_coffees, key=get_nearest_coffee)
     five_coffees = sorted_coffees_distanse[:5]
-    pprint(five_coffees)
     for five_coffee in five_coffees:
         long = five_coffee['longitude']
         lati = five_coffee['latitude']
@@ -75,8 +80,10 @@ def main():
     address = input("Где вы находитесь ? ")
     point_1 = address
     coord_point_1 = fetch_coordinates(apikey, point_1)
-    print("Ваши координаты: ", coord_point_1)
     coffee_all(coord_point_1)
+    app = Flask(__name__)
+    app.add_url_rule('/', 'hello', hello_world)
+    app.run('0.0.0.0')
 
 
 if __name__ == '__main__':
