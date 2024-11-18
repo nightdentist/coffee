@@ -37,7 +37,7 @@ def coffee_all(coord_point_1):
         coord_point_2 = lon, lat
         dict_coffees = dict()
         dict_coffees['title'] = name
-        dict_coffees['distance'] = str(distance.distance(coord_point_1, coord_point_2).km)
+        dict_coffees['distance'] = str(distance.distance(coord_point_1[::-1], coord_point_2[::-1]).km)
         dict_coffees['longitude'] = lon
         dict_coffees['latitude'] = lat
         list_coffees.append(dict_coffees)
